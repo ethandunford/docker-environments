@@ -4,5 +4,6 @@ for i in $(ls -d */);
     do 
         echo "==> removing ${i%%/}"
         docker stop ${i%%/};
-        docker rm  ${i%%/}
+        docker rm  ${i%%/};
+        docker image ${i%%/};
     done
