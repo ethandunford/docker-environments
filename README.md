@@ -22,6 +22,7 @@ A collection of Docker environments to help with your development workflow.
 - [ ] PHP
 - [ ] Python
 - [ ] Kotlin
+- [ ] Postgres
 
 ## Running locally
 
