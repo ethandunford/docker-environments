@@ -1,0 +1,7 @@
+data
+themes
+plugins
+.viminfo
+.mysql_history
+.bash_history
+salt.txt
