@@ -1,12 +1,12 @@
-set -e
-
 NAME=${PWD##*/}
-NETWORK="${NAME}-nextwork"
+NETWORK="${NAME}-network"
 IMAGE="${NAME}-image"
 
 echo "==> stopping and removing any old instances"
 docker stop $NAME
 docker rm $NAME
+
+set -e
 
 echo "==> creating ${NETWORK}"
 docker network create -d bridge ${NETWORK} || true
