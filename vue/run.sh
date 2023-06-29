@@ -1,16 +1,18 @@
-
 NAME=${PWD##*/}
+NETWORK="${NAME}-network"
+IMAGE="${NAME}-image"
 
-echo "==> stopping and cleaning any old instances"
+echo "==> stopping and removing any old instances"
 docker stop $NAME
 docker rm $NAME
 
-echo "==> creating vue-network"
-docker network create -d bridge vue-network || true
+set -e
 
-echo "==> building vue image"
+echo "==> creating ${NETWORK}"
+docker network create -d bridge $NETWORK || true
 
-DOCKER_BUILDKIT=1 docker build -t $NAME -f Dockerfile.
+echo "==> building $IMAGE"
+DOCKER_BUILDKIT=1 docker build -t $IMAGE -f Dockerfile .
 
 docker run --rm \
     -it \
@@ -18,5 +20,5 @@ docker run --rm \
     -w /home/node/app \
     --name=$NAME \
     -p 5173:5173 \
-    $NAME \
+    $IMAGE \
     bash

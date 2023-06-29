@@ -13,17 +13,6 @@
 
 A collection of Docker environments to help with your development workflow.
 
-## Objectives
-
-- [ ] Wordpress
-- [ ] Vue
-- [ ] Nuxt
-- [ ] Next
-- [ ] PHP
-- [ ] Python
-- [ ] Kotlin
-- [ ] Postgres
-
 ## Running locally
 
 ```

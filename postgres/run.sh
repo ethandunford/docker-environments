@@ -1,17 +1,21 @@
 
-NAME="${PWD##*/}_db"
+NAME="${PWD##*/}"
+NETWORK="${NAME}-network"
+IMAGE="${NAME}-image"
 
-echo "==> stopping and cleaning any old pg instances"
+echo "==> stopping and removing any old instances"
 docker stop $NAME
 docker rm $NAME
 
-echo "==> creating postgres-network"
-docker network create -d bridge postgres-network || true
+set -e
 
-echo "==> building postgres image"
-DOCKER_BUILDKIT=1 docker build -t $NAME -f Dockerfile .
+echo "==> creating ${NETWORK}"
+docker network create -d bridge $NETWORK || true
 
-echo "==> starting up a new postgres instance with ID: $NAME"
+echo "==> building ${IMAGE}"
+DOCKER_BUILDKIT=1 docker build -t $IMAGE -f Dockerfile .
+
+echo "==> starting postgres"
 
 docker run \
 -v "$(pwd)":/root \
@@ -21,4 +25,5 @@ docker run \
 -e POSTGRES_PASSWORD=password \
 -e POSTGRES_USER=dev \
 -e POSTGRES_DATABASE=postgres \
--p 5432:5432 $NAME
+-p 5432:5432 \
+$IMAGE

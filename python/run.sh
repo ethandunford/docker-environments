@@ -1,19 +1,22 @@
-set -e
 NAME=${PWD##*/}
+NETWORK="${NAME}-network"
+IMAGE="${NAME}-image"
 
-echo "==> stopping and cleaning any old instances"
+echo "==> stopping and removing any old instances"
 docker stop $NAME
 docker rm $NAME
 
-echo "==> creating python-nextwork"
-docker network create -d bridge python-network || true
+set -e
 
-echo "==> building python image"
-DOCKER_BUILDKIT=1 docker build -t $NAME -f Dockerfile .
+echo "==> creating ${NETWORK}"
+docker network create -d bridge ${NETWORK} || true
+
+echo "==> building ${NAME} image"
+DOCKER_BUILDKIT=1 docker build -t $IMAGE -f Dockerfile .
 
 docker run \
     --name=$NAME \
     -v "$(pwd)/app":/root \
-    --network=python-network \
+    --network=$NETWORK \
     -e DB="dbname='pythondb' user='pythondb' password='password' host='db'" \
-    -it $NAME /bin/bash
+    -it $IMAGE /bin/bash

@@ -1,34 +1,37 @@
-
 NAME=${PWD##*/}
+NETWORK="${NAME}-network"
+IMAGE="${NAME}-image"
+DB="${NAME}_db"
+DBIMAGE="${NAME}-db-image"
 
-echo "==> stopping and cleaning any old instances"
-
+echo "==> stopping and removing any old instances"
 docker stop $NAME
-docker rm   $NAME
+docker rm $NAME
+docker stop $DB
+docker rm $DB
 
-docker stop "lamp_db"
-docker rm   "lamp_db"
+set -e
 
-echo "==> creating lamp_network"
-docker network create -d bridge lamp_network || true
+echo "==> creating ${NETWORK}"
+docker network create -d bridge $NETWORK || true
 
-echo "==> building lamp image"
-DOCKER_BUILDKIT=1 docker build -t $NAME -f Dockerfile .
+echo "==> building $IMAGE"
+DOCKER_BUILDKIT=1 docker build -t $IMAGE -f Dockerfile .
 
 echo "==> building postgres image"
-DOCKER_BUILDKIT=1 docker build -t "lamp_db" -f Dockerfile.db .
+DOCKER_BUILDKIT=1 docker build -t $DBIMAGE -f Dockerfile.db .
 
-echo "==> starting database"
+echo "==> starting postgres"
 
 docker run \
   -d \
-  --name "lamp_db" \
-  --network=lamp_network \
+  --name $DB \
+  --network=$NETWORK \
   -e POSTGRES_PASSWORD=password \
   -e POSTGRES_USER=dev \
   -e POSTGRES_DATABASE=lamp \
   -p 5555:5432 \
-  "lamp_db"
+  $DBIMAGE
 
 echo "==> starting $NAME"
 
@@ -36,11 +39,11 @@ docker run --rm -d \
   --name $NAME \
   -p 8080:80 \
   -v "$(pwd)/src":/var/www/html \
-  --network=lamp_network \
-  -e DB_NAME_server="lamp_db" \
+  --network=$NETWORK \
+  -e DB_NAME_server=$DB \
   -e DB_NAME_name=dev \
   -e DB_NAME_user=lamp \
   -e DB_NAME_pass=password \
-  $NAME
+  $IMAGE
 
 echo "===> $NAME: http://localhost:8080/"
