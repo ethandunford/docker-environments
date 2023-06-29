@@ -10,7 +10,7 @@ docker network create -d bridge vue-network || true
 
 echo "==> building vue image"
 
-DOCKER_BUILDKIT=1 docker build -t $NAME -f Dockerfile .
+DOCKER_BUILDKIT=1 docker build -t $NAME -f Dockerfile.
 
 docker run --rm \
     -it \
