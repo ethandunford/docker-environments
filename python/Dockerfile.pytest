@@ -1,0 +1,5 @@
+
+FROM python:3.10.4-slim-bullseye
+WORKDIR /root
+COPY requirements-pytest.txt /root
+RUN pip install -r requirements-pytest.txt
