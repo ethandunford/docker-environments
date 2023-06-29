@@ -3,7 +3,7 @@ set -e
 NAME=${PWD##*/}
 IP=$(ip -o route get to 8.8.8.8 | sed -n 's/.*src \([0-9.]\+\).*/\1/p')
 
-echo "==> stopping and cleaning any old instances"
+echo "==> stopping and removing any old instances"
 docker stop "${NAME}_pytest"
 docker rm "${NAME}_pytest"
 

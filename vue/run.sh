@@ -1,7 +1,7 @@
 
 NAME=${PWD##*/}
 
-echo "==> stopping and cleaning any old instances"
+echo "==> stopping and removing any old instances"
 docker stop $NAME
 docker rm $NAME
 
