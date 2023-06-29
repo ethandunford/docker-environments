@@ -1,13 +1,16 @@
 NAME=${PWD##*/}
+NETWORK="${NAME}-network"
+IMAGE="${NAME}-image"
 
-echo "==> building vue image"
+set -e
 
-DOCKER_BUILDKIT=1 docker build -t $NAME -f Dockerfile .
+echo "==> building vue ${IMAGE}"
+DOCKER_BUILDKIT=1 docker build -t $IMAGE -f Dockerfile .
 
-echo "building $NAME"
+echo "==> starting tests"
 
 docker run --rm \
     -v "$(pwd)":/home/node/app \
     -w /home/node/app \
-    $NAME \
+    $IMAGE \
     bash -c "npm install && npm run test:unit"
